@@ -29,6 +29,8 @@ int main()
 		return -1;
 	}
 
+	// big change!
+
 	// Shaders
 	Shader myShader("ShaderSourceCode/vertexShader.vs", "ShaderSourceCode/fragmentShader.fs", &myCamera, SCR_WIDTH, SCR_HEIGHT);
 	Shader lightShader("ShaderSourceCode/lightVertexShader.vs", "ShaderSourceCode/lightFragmentShader.fs", &myCamera, SCR_WIDTH, SCR_HEIGHT);
