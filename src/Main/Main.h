@@ -3,6 +3,7 @@
 // Class includes
 #include "Shader.h"
 #include "Camera.h"
+#include "GameManager.h"
 #include "Geometry.h"
 // #define STB_IMAGE_IMPLEMENTATION
 // #include "stb_image.h" // Image loader file
@@ -20,6 +21,7 @@ double lastFrame = 0.0;
 
 // Bool`s
 bool firstMouse = true;
+bool firstTick = false;
 
 // Object`s
 Camera myCamera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -28,6 +30,9 @@ Geometry lightGeometry;
 Geometry solidColorGeometry;
 Geometry testPlane;
 Geometry testNormals;
+
+// Game
+GameManager GameManagerObject;
 
 // ------------------- Function`s -------------------
 

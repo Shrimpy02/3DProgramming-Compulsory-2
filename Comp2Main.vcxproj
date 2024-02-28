@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)src;$(SolutionDir)src/Camera;$(SolutionDir)src/Geometry;$(SolutionDir)src/Main;$(SolutionDir)src/Shaders;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)src;$(SolutionDir)src/Camera;$(SolutionDir)src/Geometry;$(SolutionDir)src/Main;$(SolutionDir)src/Shaders;$(SolutionDir)src/Game;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -108,6 +108,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Dependencies\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,6 +137,10 @@
     <ClCompile Include="Comp2Main.cpp" />
     <ClCompile Include="Dependencies\Include\glm\detail\glm.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="src\Game\GameManager.cpp" />
+    <ClCompile Include="src\Game\LevelManager.cpp" />
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultCube.cpp" />
+    <ClCompile Include="src\Geometry\Geometry.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\Include\glad\glad.h" />
@@ -430,6 +435,9 @@
     <ClInclude Include="Dependencies\Include\glm\vector_relational.hpp" />
     <ClInclude Include="Dependencies\Include\KHR\khrplatform.h" />
     <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Game\GameManager.h" />
+    <ClInclude Include="src\Game\LevelManager.h" />
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultCube.h" />
     <ClInclude Include="src\Geometry\Geometry.h" />
     <ClInclude Include="src\Main\Main.h" />
     <ClInclude Include="src\Main\StateManager.h" />
