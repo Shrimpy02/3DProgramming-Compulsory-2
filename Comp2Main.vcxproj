@@ -140,6 +140,9 @@
     <ClCompile Include="src\Game\GameManager.cpp" />
     <ClCompile Include="src\Game\LevelManager.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultCube.cpp" />
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPlane.cpp" />
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPyramid.cpp" />
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultSphere.cpp" />
     <ClCompile Include="src\Geometry\Geometry.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -438,6 +441,9 @@
     <ClInclude Include="src\Game\GameManager.h" />
     <ClInclude Include="src\Game\LevelManager.h" />
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultCube.h" />
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPlane.h" />
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPyramid.h" />
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultSphere.h" />
     <ClInclude Include="src\Geometry\Geometry.h" />
     <ClInclude Include="src\Main\Main.h" />
     <ClInclude Include="src\Main\StateManager.h" />

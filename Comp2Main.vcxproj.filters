@@ -36,6 +36,15 @@
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPyramid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\Include\glad\glad.h">
@@ -936,6 +945,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPyramid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

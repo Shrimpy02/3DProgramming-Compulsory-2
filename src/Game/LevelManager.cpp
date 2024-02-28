@@ -1,14 +1,18 @@
 #include "LevelManager.h"
 #include "Geometry.h"
 #include "DefaultGeometry/DefaultCube.h"
+#include "DefaultGeometry/DefaultPlane.h"
+#include "DefaultGeometry/DefaultPyramid.h"
+#include "DefaultGeometry/DefaultSphere.h"
 
 LevelManager::LevelManager()
 {
 
 	// Construct and add geometry to level
-	GeometryInLevel.push_back(new DefaultCube());
-
-
+	GeometryInLevel.push_back(new DefaultSphere());
+	//GeometryInLevel.push_back(new DefaultPyramid());
+	//GeometryInLevel.push_back(new DefaultCube());
+	GeometryInLevel.push_back(new DefaultPlane());
 }
 
 LevelManager::~LevelManager()
@@ -60,10 +64,7 @@ void LevelManager::DrawGeometry(T* _geometry)
 	{
 		_geometry->drawVertexGeometry();
 	}
-	else if constexpr (is_same_v<T, DefaultCube>)
-	{
-		_geometry->drawVertexGeometry();
-	}
+
 }
 
 template <typename T>
@@ -74,26 +75,16 @@ void LevelManager::DeleteGeometry(T* _geometry)
 		_geometry->~Geometry();
 		delete _geometry;
 	}
-	else if constexpr (is_same_v<T, DefaultCube>)
-	{
-		_geometry->~Geometry();
-		delete _geometry;
-	}
+
 }
 
 template <typename T>
 void LevelManager::InitializeGeometry(T* _geometry)
 {
-	cout << "test" << endl;
-
 	if constexpr(is_same_v<T, Geometry>) 
 	{
 		_geometry->Initialize();
 
-	}
-	else if constexpr (is_same_v<T, DefaultCube>)
-	{
-		_geometry->Initialize();
 	}
 
 }

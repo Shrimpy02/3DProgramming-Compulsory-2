@@ -48,7 +48,7 @@ public:
 
 	virtual ~Geometry();
 
-	void Initialize();
+	virtual void Initialize();
 
 	void Initialize(vector<float>* geometry, int _numVariables);
 
@@ -93,8 +93,6 @@ private:
 	vector<Vertex*> readVerticesFromFile(const char* _filePath);
 
 	vector<Normal*> readNormalsFromFile(const char* _filePath);
-
-
 
 	Vertex* CreateNewVertex(float _x, float _y, float _z, float _nx, float _ny, float _nz, float _r, float _g, float _b);
 
