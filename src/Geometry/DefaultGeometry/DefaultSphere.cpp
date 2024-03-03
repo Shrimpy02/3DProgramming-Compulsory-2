@@ -1,10 +1,19 @@
 #include "DefaultSphere.h"
+#include "Shader.h"
 
-#include <iostream>
 #include "glm/glm.hpp"
 
 DefaultSphere::DefaultSphere()
 {
+}
+
+DefaultSphere::DefaultSphere(Shader* _shader, vec3 _worldPosition, vec3 _worldScale, float _worldRotationInDegrees, vec3 _worldRotationAxis)
+{
+	ObjectShader = _shader;
+	WorldPosition = _worldPosition;
+	WorldScale = _worldScale;
+	WorldRotationInDegrees = _worldRotationInDegrees;
+	WorldRotationAxis = _worldRotationAxis;
 }
 
 void DefaultSphere::Initialize()
@@ -30,6 +39,17 @@ void DefaultSphere::Initialize()
 	makeSphere();
 
 	Geometry::Initialize(&SphereVertices, NumVariables);
+}
+
+void DefaultSphere::drawVertexGeometry()
+{
+	if (ObjectShader)
+	{
+		ObjectShader->use();
+		ObjectShader->processTransformations(WorldPosition, WorldScale, WorldRotationInDegrees, WorldRotationAxis);
+	}
+
+	Geometry::drawVertexGeometry();
 }
 
 void DefaultSphere::SubDivide(const vec3& a, const vec3& b, const vec3& c, int n)
@@ -58,12 +78,11 @@ void DefaultSphere::SubDivide(const vec3& a, const vec3& b, const vec3& c, int n
 
 void DefaultSphere::MakeTriangle(const vec3& _a, const vec3& _b, const vec3& _c)
 {
-
-	Vertex* v = new Vertex{ _a.x,_a.y,_a.z,-_a.x,-_a.y,-_a.z, r, g, b };
+	Vertex* v = new Vertex{ _a.x,_a.y,_a.z,_a.x,_a.y,_a.z, r, g, b };
 	SphereVerticesStruct.push_back(v);
-	v = new Vertex{ _b.x,_b.y,_b.z,-_b.x,-_b.y,-_b.z, r, g, b };
+	v = new Vertex{ _b.x,_b.y,_b.z,_b.x,_b.y,_b.z, r, g, b };
 	SphereVerticesStruct.push_back(v);
-	v = new Vertex{ _c.x,_c.y,_c.z,-_c.x,-_c.y,-_c.z, r, g, b };
+	v = new Vertex{ _c.x,_c.y,_c.z,_c.x,_c.y,_c.z, r, g, b };
 	SphereVerticesStruct.push_back(v);
 }
 
@@ -81,4 +100,8 @@ void DefaultSphere::makeSphere()
 		SphereVertices.push_back(SphereVerticesStruct[i]->g);
 		SphereVertices.push_back(SphereVerticesStruct[i]->b);
 	}
+}
+
+void DefaultSphere::TickVertexGeometry()
+{
 }

@@ -38,18 +38,21 @@ public:
 	perspectiveMode activePerspectiveMode = PERSPECTIVE;
 
 	// ---------- Constructors --------------
-	Shader(const char* _vertexPath, const char* _fragmentPath, Camera* _camera,unsigned int _SCR_WIDTH, unsigned int _SCR_HEIGHT)
+	Shader(const char* _vertexPath, const char* _fragmentPath, Camera* _camera, unsigned int _SCR_WIDTH, unsigned int _SCR_HEIGHT)
 	{
 		// Reads, compiles and links the Shader`s
 		// --------------------------
+
+		myCamera = _camera;
+		SCR_WIDTH = _SCR_WIDTH;
+		SCR_HEIGHT = _SCR_HEIGHT;
+
 		linkShaders(CreateVertexShader(_vertexPath), 
 					CreateFragmentShader(_fragmentPath));
 
 		glEnable(GL_DEPTH_TEST);
 
-		myCamera = _camera;
-		SCR_WIDTH = _SCR_WIDTH;
-		SCR_HEIGHT = _SCR_HEIGHT;
+
 	}
 
 	// ---------- Global functions --------------
@@ -104,8 +107,9 @@ public:
 		mat4 model = mat4(1.0f);
 
 		model = translate(model, positionOffset);
-		model = scale(model, scaleOffset);
 		model = rotate(model, radians(rotationInDegreesOffset), rotationAxis);
+		model = scale(model, scaleOffset);
+		
 
 		setMat4("model", model);
 
@@ -205,7 +209,7 @@ private:
 		const char* fShaderCode = fragmentCode.c_str();
 
 
-		// Vertex Shader
+		// Fragment Shader
 		// --------------------------
 		unsigned int fragment;
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);

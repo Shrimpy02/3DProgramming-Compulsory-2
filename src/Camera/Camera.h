@@ -90,6 +90,8 @@ public:
     {
         float velocity = MovementSpeed * deltaTime;
 
+        float OringalY = Position.y;
+
 		if (direction == FORWARD)
             Position += Front * velocity;
         if (direction == BACKWARD)
@@ -98,14 +100,16 @@ public:
             Position -= Right * velocity;
         if (direction == RIGHT)
             Position += Right * velocity;
+       // if (direction == UP)
+          //  Position += Up * velocity;
+       // if (direction == DOWN)
+           // Position -= Up * velocity;
 
-        if (ActiveMovementMode == FLYING)
+        if (ActiveMovementMode == WALKING)
         {
-            if (direction == UP)
-                Position += Up * velocity;
-            if (direction == DOWN)
-                Position -= Up * velocity;
+            Position.y = OringalY;
         }
+      
     }
 
     void ProcessMouseMovement(float _xOffset, float _yOffset, GLboolean _constrainPitch = true)

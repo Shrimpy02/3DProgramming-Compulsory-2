@@ -45,6 +45,12 @@
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPlane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Geometry\DefaultGeometry\ComplexGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\Characters\PlayerCharacter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\Include\glad\glad.h">
@@ -956,6 +962,12 @@
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPlane.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Geometry\DefaultGeometry\ComplexGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\Characters\PlayerCharacter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\Include\glm\detail\func_common.inl">
@@ -1375,5 +1387,11 @@
     <None Include="Dependencies\Include\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="ShaderSourceCode\fragmentShader.fs" />
+    <None Include="ShaderSourceCode\lightFragmentShader.fs" />
+    <None Include="ShaderSourceCode\lightVertexShader.vs" />
+    <None Include="ShaderSourceCode\normalFragmentShader.fs" />
+    <None Include="ShaderSourceCode\normalVertexShader.vs" />
+    <None Include="ShaderSourceCode\vertexShader.vs" />
   </ItemGroup>
 </Project>

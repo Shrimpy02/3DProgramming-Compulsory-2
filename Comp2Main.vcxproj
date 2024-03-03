@@ -137,8 +137,10 @@
     <ClCompile Include="Comp2Main.cpp" />
     <ClCompile Include="Dependencies\Include\glm\detail\glm.cpp" />
     <ClCompile Include="glad.c" />
+    <ClCompile Include="src\Game\Characters\PlayerCharacter.cpp" />
     <ClCompile Include="src\Game\GameManager.cpp" />
     <ClCompile Include="src\Game\LevelManager.cpp" />
+    <ClCompile Include="src\Geometry\DefaultGeometry\ComplexGeometry.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultCube.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPlane.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPyramid.cpp" />
@@ -438,8 +440,10 @@
     <ClInclude Include="Dependencies\Include\glm\vector_relational.hpp" />
     <ClInclude Include="Dependencies\Include\KHR\khrplatform.h" />
     <ClInclude Include="src\Camera\Camera.h" />
+    <ClInclude Include="src\Game\Characters\PlayerCharacter.h" />
     <ClInclude Include="src\Game\GameManager.h" />
     <ClInclude Include="src\Game\LevelManager.h" />
+    <ClInclude Include="src\Geometry\DefaultGeometry\ComplexGeometry.h" />
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultCube.h" />
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPlane.h" />
     <ClInclude Include="src\Geometry\DefaultGeometry\DefaultPyramid.h" />
@@ -590,6 +594,12 @@
     <None Include="Dependencies\Include\glm\gtx\vector_angle.inl" />
     <None Include="Dependencies\Include\glm\gtx\vector_query.inl" />
     <None Include="Dependencies\Include\glm\gtx\wrap.inl" />
+    <None Include="ShaderSourceCode\fragmentShader.fs" />
+    <None Include="ShaderSourceCode\lightFragmentShader.fs" />
+    <None Include="ShaderSourceCode\lightVertexShader.vs" />
+    <None Include="ShaderSourceCode\normalFragmentShader.fs" />
+    <None Include="ShaderSourceCode\normalVertexShader.vs" />
+    <None Include="ShaderSourceCode\vertexShader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

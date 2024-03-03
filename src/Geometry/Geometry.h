@@ -2,6 +2,7 @@
 #define GEOMETRY_H
 #include <vector>
 #include "glm/vec3.hpp"
+#include <iostream>
 
 
 struct Vertex
@@ -29,8 +30,9 @@ class Geometry
 public:
 	// ---------- Global Constants --------------
 
-
-
+	vec3 WorldPosition;
+	vec3 WorldScale;
+	bool ShouldRender = true;
 private:
 
 	// ---------- Local Constants --------------
@@ -40,6 +42,8 @@ private:
 	int numVertices = 0;
 
 	bool doneonce = false;
+
+
 
 	// ---------- Global functions --------------
 
@@ -54,19 +58,9 @@ public:
 
 	virtual void drawVertexGeometry();
 
-	void drawVertexGeometry(bool _useIndices, Shader* shaderToUse);
+	vector<float>* InitializeVertexGeometryFromFile(const char* _filePath);
 
-	void drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset);
-
-	void drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset);
-
-	void drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset, float rotationOffset, vec3 rotationAxis);
-
-	void drawNormalGeometry(Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset, float rotationOffset, vec3 rotationAxis);
-
-	vector<float>* generateVertexGeometryFromFile(const char* _filePath);
-
-	vector<float>* generateNormalGeometryFromFile(const char* _filePath);
+	vector<float>* InitializeNormalGeometryFromFile(const char* _filePath);
 
 	void bindBufferData(vector<float> _vertices);
 
@@ -79,6 +73,18 @@ public:
 	void createAttributePointers(bool pos, bool color);
 
 	void createAttributePointers(bool pos, bool normals, bool color);
+
+	// added afterwards; needs cleaning:
+
+	virtual void TickVertexGeometry();
+
+	virtual void Move(vec3 movementDirection, float deltatime);
+
+	virtual bool CheckCollision(Geometry* _otherObject);
+
+	virtual void DoCollision(Geometry* _otherGeometry);
+
+	virtual bool ShouldDraw();
 
 private:
 
@@ -109,3 +115,4 @@ public:
 
 
 #endif
+

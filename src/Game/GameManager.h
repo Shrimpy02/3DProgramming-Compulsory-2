@@ -15,10 +15,14 @@ private:
 
 	// ---------- Local Constants --------------
 	class LevelManager* LevelManagerObject;
-		
+
+	class PlayerCharacter* Player;
+
 public:
 	// ---------- Global functions --------------
 	GameManager();
+
+	GameManager(unsigned int& _screenWidth, unsigned int& _screenHeight);
 
 	virtual ~GameManager();
 
@@ -26,6 +30,7 @@ public:
 
 	virtual void Tick(float deltatime);
 
+	void InputCalls(struct GLFWwindow* window);
 
 private:
 	// ---------- Local functions --------------
@@ -35,6 +40,5 @@ private:
 	
 public:
 	// ---------- Getters and setters --------------
-
-
+	PlayerCharacter* GetPlayer() { return Player; }
 };

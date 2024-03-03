@@ -65,79 +65,12 @@ void Geometry::drawVertexGeometry()
 	glBindVertexArray(0);
 }
 
-void Geometry::drawVertexGeometry(bool _useIndices, Shader* shaderToUse)
-{
-	glBindVertexArray(VAO);
-	shaderToUse->use();
-	shaderToUse->processTransformations();
-
-	if (_useIndices)
-		glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-	else
-		glDrawArrays(GL_TRIANGLES, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-void Geometry::drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset)
-{
-	glBindVertexArray(VAO);
-	shaderToUse->use();
-	shaderToUse->processTransformations(positionOffset);
-
-	if (_useIndices)
-		glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-	else
-		glDrawArrays(GL_TRIANGLES, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-void Geometry::drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset)
-{
-	glBindVertexArray(VAO);
-	shaderToUse->use();
-	shaderToUse->processTransformations(positionOffset, scaleOffset);
-
-	if (_useIndices)
-		glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-	else
-		glDrawArrays(GL_TRIANGLES, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-void Geometry::drawVertexGeometry(bool _useIndices, Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset, float rotationOffset, vec3 rotationAxis)
-{
-	glBindVertexArray(VAO);
-	shaderToUse->use();
-	shaderToUse->processTransformations(positionOffset, scaleOffset, rotationOffset, rotationAxis);
-
-	if (_useIndices)
-		glDrawElements(GL_TRIANGLES, numVertices, GL_UNSIGNED_INT, 0);
-	else
-		glDrawArrays(GL_TRIANGLES, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-void Geometry::drawNormalGeometry(Shader* shaderToUse, vec3 positionOffset, vec3 scaleOffset, float rotationOffset, vec3 rotationAxis)
-{
-	glBindVertexArray(VAO);
-	shaderToUse->use();
-	shaderToUse->processTransformations(positionOffset, scaleOffset, rotationOffset, rotationAxis);
-
-	glDrawArrays(GL_LINES, 0, numVertices);
-
-	glBindVertexArray(0);
-}
-
-vector<float>* Geometry::generateVertexGeometryFromFile(const char* _filePath)
+vector<float>* Geometry::InitializeVertexGeometryFromFile(const char* _filePath)
 {
 	return genVerticesFromStruct(readVerticesFromFile(_filePath));
 }
 
-vector<float>* Geometry::generateNormalGeometryFromFile(const char* _filePath)
+vector<float>* Geometry::InitializeNormalGeometryFromFile(const char* _filePath)
 {
 	return genNormalsFromStruct(readNormalsFromFile(_filePath));
 }
@@ -196,7 +129,47 @@ void Geometry::createAttributePointers(bool pos, bool normals, bool color)
 	glEnableVertexAttribArray(2);
 }
 
-	// ---------- Local functions --------------
+void Geometry::TickVertexGeometry()
+{
+}
+
+void Geometry::Move(vec3 movementDirection, float deltatim)
+{
+}
+
+bool Geometry::CheckCollision(Geometry* _otherObject)
+{
+	//// Calculate half scales
+		//float halfScaleX = this->WorldScale.x / 2.0f;
+		//float halfScaleY = colider->WorldScale.y / 2.0f;
+		//float halfScaleZ = colider->WorldScale.z / 2.0f;
+
+		//// Calculate half scales for the other cube
+		//float otherHalfScaleX = collided->WorldScale.x / 2.0f;
+		//float otherHalfScaleY = collided->WorldScale.y / 2.0f;
+		//float otherHalfScaleZ = collided->WorldScale.z / 2.0f;
+
+		//// Check for overlap along each axis
+		//bool overlapX = std::abs(colider->WorldPosition.x - collided->WorldPosition.x) < halfScaleX + otherHalfScaleX;
+		//bool overlapY = std::abs(colider->WorldPosition.y - collided->WorldPosition.y) < halfScaleY + otherHalfScaleY;
+		//bool overlapZ = std::abs(colider->WorldPosition.z - collided->WorldPosition.z) < halfScaleZ + otherHalfScaleZ;
+
+		//// Return true if there is overlap along all three axes
+		//return overlapX && overlapY && overlapZ;
+	return false;
+}
+
+void Geometry::DoCollision(Geometry* _otherGeometry)
+{
+}
+
+bool Geometry::ShouldDraw()
+{
+	return ShouldRender;
+}
+
+
+// ---------- Local functions --------------
 
 	vector<float>* Geometry::genVerticesFromStruct(vector<Vertex*> _vertices)
 	{

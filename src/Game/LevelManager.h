@@ -21,9 +21,21 @@ private:
 	// ---------- Local Constants --------------
 	vector<Geometry*> GeometryInLevel;
 
+	class Camera* PlayerCamera;
+	class PlayerCharacter* Player;
+	unsigned int ScreenWidth;
+	unsigned int ScreenHeight;
+
+	class Shader* DefaultShader;
+	class Shader* LightShader;
+	class Shader* NormalShader;
+	bool erase = true;
+
 public:
 	// ---------- Global functions --------------
 	LevelManager();
+
+	LevelManager(class Camera* _camera, class PlayerCharacter* _player, unsigned int& _screenWidth, unsigned int& _screenHeight);
 
 	~LevelManager();
 
@@ -38,10 +50,17 @@ public:
 	void AddObjectToLevel(Geometry* _geometryToAdd);
 
 	template <typename T>
+	void CollideGeometry(T* collider, T* collided);
+
+	template <typename T>
+	void TickGeometry(T* _geometry);
+
+	template <typename T>
 	void DrawGeometry(T* _geometry);
 
 private:
 	// ---------- Local functions --------------
+
 	template <typename T>
 	void DeleteGeometry(T* _geometry);
 
