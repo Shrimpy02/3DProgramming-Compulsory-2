@@ -2,15 +2,12 @@
 
 // C++ specific components
 #include <vector>
-#include "iostream"
 
 // Classes
 #include "GameManager.h"
 
 // Namespaces
 using namespace std;
-
-class Geometry;
 
 class LevelManager
 {
@@ -19,7 +16,10 @@ public:
 
 private:
 	// ---------- Local Constants --------------
-	vector<Geometry*> GeometryInLevel;
+	
+	vector<class Geometry*> StaticGeometryInLevel;
+
+	vector<class GameObject*> GameObjectsInLevel;
 
 	class Camera* PlayerCamera;
 	class PlayerCharacter* Player;
@@ -29,7 +29,6 @@ private:
 	class Shader* DefaultShader;
 	class Shader* LightShader;
 	class Shader* NormalShader;
-	bool erase = true;
 
 public:
 	// ---------- Global functions --------------
@@ -47,25 +46,28 @@ public:
 
 	void CheckCollision();
 
-	void AddObjectToLevel(Geometry* _geometryToAdd);
-
-	template <typename T>
-	void CollideGeometry(T* collider, T* collided);
-
-	template <typename T>
-	void TickGeometry(T* _geometry);
-
-	template <typename T>
-	void DrawGeometry(T* _geometry);
-
 private:
 	// ---------- Local functions --------------
 
 	template <typename T>
-	void DeleteGeometry(T* _geometry);
+	void InitializeGeometry(T* _geometry);
 
 	template <typename T>
-	void InitializeGeometry(T* _geometry);
+	void BeginPlayGeometry(T* _geometry);
+
+	template <typename T>
+	void TickGeometry(T* _geometry, float deltatime);
+
+	template <typename T>
+	void DrawGeometry(T* _geometry);
+
+	template <typename T>
+	void DoCollision(T* _geometry);
+
+	template <typename T>
+	void DeleteObject(T* _geometry);
+
+
 
 public:
 	// ---------- Getters and setters --------------

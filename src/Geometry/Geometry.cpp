@@ -1,13 +1,12 @@
+// Class includes
 #include "Geometry.h"
 #include "Shader.h"
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-#include <glad/glad.h>
-#include "GLFW/glfw3.h"
 
+
+// Name Space
 using namespace std;
+using namespace glm;
 
 Geometry::Geometry()
 {
@@ -40,20 +39,41 @@ void Geometry::Initialize(vector<float>* geometry, int _numVariables)
 	{
 	case 3:
 		bindBufferData(geometry);
-		createAttributePointers(true);
+		CreateAttributePointers(true);
 		break;
 	case 6:
 		bindBufferData(geometry);
-		createAttributePointers(true, true);
+		CreateAttributePointers(true, true);
 		break;
 	case 9:
 		bindBufferData(geometry);
-		createAttributePointers(true, true, true);
+		CreateAttributePointers(true, true, true);
 		break;
 	default:
 		cout << "ERROR NUM VARIABLES NOT CORRECT \n";
 		break;
 	}
+}
+
+void Geometry::BeginPlayGeometry()
+{
+}
+
+void Geometry::TickVertexGeometry(float deltatime)
+{
+}
+
+bool Geometry::CheckCollision(Geometry* _otherObject)
+{
+	// Should be local logic specified to it`s geometry
+	cout << "Empty Collision Checker\n";
+	return false;
+}
+
+void Geometry::DoCollision(Geometry* _otherGeometry)
+{
+	// Should be local logic specified to it`s geometry
+	cout << "Empty Collision Do`er\n";
 }
 
 void Geometry::drawVertexGeometry()
@@ -65,21 +85,12 @@ void Geometry::drawVertexGeometry()
 	glBindVertexArray(0);
 }
 
-vector<float>* Geometry::InitializeVertexGeometryFromFile(const char* _filePath)
+void Geometry::Move(vec3 movementDirection, float deltatime)
 {
-	return genVerticesFromStruct(readVerticesFromFile(_filePath));
+	WorldPosition += (movementDirection * deltatime) / vec3(10, 10, 10);
 }
 
-vector<float>* Geometry::InitializeNormalGeometryFromFile(const char* _filePath)
-{
-	return genNormalsFromStruct(readNormalsFromFile(_filePath));
-}
-
-void Geometry::bindBufferData(vector<float> _vertices)
-{
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), _vertices.data(), GL_STATIC_DRAW);
-}
+// ---------- Local functions --------------
 
 void Geometry::bindBufferData(vector<float>* _vertices)
 {
@@ -98,7 +109,7 @@ void Geometry::bindBufferData(vector<float> _vertices, vector<unsigned int> _ind
 
 }
 
-void Geometry::createAttributePointers(bool pos)
+void Geometry::CreateAttributePointers(bool pos)
 {
 	// position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -106,7 +117,7 @@ void Geometry::createAttributePointers(bool pos)
 
 }
 
-void Geometry::createAttributePointers(bool pos, bool color)
+void Geometry::CreateAttributePointers(bool pos, bool color)
 {
 	// position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
@@ -116,7 +127,7 @@ void Geometry::createAttributePointers(bool pos, bool color)
 	glEnableVertexAttribArray(1);
 }
 
-void Geometry::createAttributePointers(bool pos, bool normals, bool color)
+void Geometry::CreateAttributePointers(bool pos, bool normals, bool color)
 {
 	// position
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
@@ -129,299 +140,266 @@ void Geometry::createAttributePointers(bool pos, bool normals, bool color)
 	glEnableVertexAttribArray(2);
 }
 
-void Geometry::TickVertexGeometry()
+// Reading from file:
+
+vector<float>* Geometry::InitializeVertexGeometryFromFile(const char* _filePath)
 {
+	return genVerticesFromStruct(readStructFromFile(_filePath));
 }
 
-void Geometry::Move(vec3 movementDirection, float deltatim)
+vector<float>* Geometry::InitializeNormalGeometryFromFile(const char* _filePath)
 {
+	return genNormalsFromNormalStruct(readNormalStructFromFile(_filePath));
 }
 
-bool Geometry::CheckCollision(Geometry* _otherObject)
+vector<float>* Geometry::genVerticesFromStruct(vector<Vertex*> _vertices)
 {
-	//// Calculate half scales
-		//float halfScaleX = this->WorldScale.x / 2.0f;
-		//float halfScaleY = colider->WorldScale.y / 2.0f;
-		//float halfScaleZ = colider->WorldScale.z / 2.0f;
-
-		//// Calculate half scales for the other cube
-		//float otherHalfScaleX = collided->WorldScale.x / 2.0f;
-		//float otherHalfScaleY = collided->WorldScale.y / 2.0f;
-		//float otherHalfScaleZ = collided->WorldScale.z / 2.0f;
-
-		//// Check for overlap along each axis
-		//bool overlapX = std::abs(colider->WorldPosition.x - collided->WorldPosition.x) < halfScaleX + otherHalfScaleX;
-		//bool overlapY = std::abs(colider->WorldPosition.y - collided->WorldPosition.y) < halfScaleY + otherHalfScaleY;
-		//bool overlapZ = std::abs(colider->WorldPosition.z - collided->WorldPosition.z) < halfScaleZ + otherHalfScaleZ;
-
-		//// Return true if there is overlap along all three axes
-		//return overlapX && overlapY && overlapZ;
-	return false;
-}
-
-void Geometry::DoCollision(Geometry* _otherGeometry)
-{
-}
-
-bool Geometry::ShouldDraw()
-{
-	return ShouldRender;
-}
-
-
-// ---------- Local functions --------------
-
-	vector<float>* Geometry::genVerticesFromStruct(vector<Vertex*> _vertices)
+	vector<float>* temp = new vector<float>;
+	for (int i = 0; i < _vertices.size(); i++)
 	{
-		vector<float>* temp = new vector<float>;
-		for (int i = 0; i < _vertices.size(); i++)
-		{
-			temp->push_back(_vertices[i]->x);
-			temp->push_back(_vertices[i]->y);
-			temp->push_back(_vertices[i]->z);
-			temp->push_back(_vertices[i]->nx);
-			temp->push_back(_vertices[i]->ny);
-			temp->push_back(_vertices[i]->nz);
-			temp->push_back(_vertices[i]->r);
-			temp->push_back(_vertices[i]->g);
-			temp->push_back(_vertices[i]->b);
-		}
-		return temp;
+		temp->push_back(_vertices[i]->x);
+		temp->push_back(_vertices[i]->y);
+		temp->push_back(_vertices[i]->z);
+		temp->push_back(_vertices[i]->nx);
+		temp->push_back(_vertices[i]->ny);
+		temp->push_back(_vertices[i]->nz);
+		temp->push_back(_vertices[i]->r);
+		temp->push_back(_vertices[i]->g);
+		temp->push_back(_vertices[i]->b);
 	}
+	return temp;
+}
 
-	vector<float>* Geometry::genNormalsFromStruct(vector<Normal*> _normals)
+vector<float>* Geometry::genNormalsFromNormalStruct(vector<Normal*> _normals)
+{
+	vector<float>* temp = new vector<float>;
+	for (int i = 0; i < _normals.size(); i++)
 	{
-		vector<float>* temp = new vector<float>;
-		for (int i = 0; i < _normals.size(); i++)
-		{
-			temp->push_back(_normals[i]->x);
-			temp->push_back(_normals[i]->y);
-			temp->push_back(_normals[i]->z);
-			temp->push_back(_normals[i]->r);
-			temp->push_back(_normals[i]->g);
-			temp->push_back(_normals[i]->b);
-		}
-		return temp;
+		temp->push_back(_normals[i]->x);
+		temp->push_back(_normals[i]->y);
+		temp->push_back(_normals[i]->z);
+		temp->push_back(_normals[i]->r);
+		temp->push_back(_normals[i]->g);
+		temp->push_back(_normals[i]->b);
 	}
+	return temp;
+}
 
-	vector<unsigned int> Geometry::GenerateIndices(vector<Vertex*> _vertices)
+vector<Vertex*> Geometry::readStructFromFile(const char* _filePath)
+{
+	ifstream GeometryFile;
+	// Open the txt file containing geometry data.
+	GeometryFile.open(_filePath);
+
+	// First line defines how many lines there are total
+	// Extract and convert to int
+	string numLinesStr;
+	getline(GeometryFile, numLinesStr);
+	int numLinesInt = stoi(numLinesStr);
+
+	string numVariablesStr;
+	getline(GeometryFile, numVariablesStr);
+	int numVariablesInt = stoi(numVariablesStr);
+
+	// Create a vector to contain all vertexes generated. 
+	vector<Vertex*> temp;
+
+	// Iterates through the total number of lines. 
+	for (int i = 0; i < numLinesInt; i++)
 	{
-		vector<unsigned int> temp;
-		for (int i = 0; i < _vertices.size(); i++)
+		// Gets the first line as a string, removes all spaces and parentheses
+		string tempLines, result1, result2, result3;
+		getline(GeometryFile, tempLines);
+		std::remove_copy(tempLines.begin(), tempLines.end(), std::back_inserter(result1), ' ');
+		std::remove_copy(result1.begin(), result1.end(), std::back_inserter(result2), '(');
+		std::remove_copy(result2.begin(), result2.end(), std::back_inserter(result3), ')');
+
+		// Pre defines variables for converting from string to float.
+		float x = 0, y = 0, z = 0, nx = 0, ny = 0, nz = 0, r = 0, g = 0, b = 0;
+
+		// Iterates through number of variables in current line
+		for (int i = 0; i < numVariablesInt; i++)
 		{
+			// Gets the index between start and first number end defined by ','.
+			int lastPosNumIndex = result3.find(',');
+			// Copies this value into sting
+			string final(result3.begin(), result3.begin() + lastPosNumIndex);
+			// Erases that value from complete string
+			result3.erase(result3.begin(), result3.begin() + lastPosNumIndex + 1);
 
-		}
-		return temp;
-	}
-
-	vector<Vertex*> Geometry::readVerticesFromFile(const char* _filePath)
-	{
-		ifstream GeometryFile;
-		// Open the txt file containing geometry data.
-		GeometryFile.open(_filePath);
-
-		// First line defines how many lines there are total
-		// Extract and convert to int
-		string numLinesStr;
-		getline(GeometryFile, numLinesStr);
-		int numLinesInt = stoi(numLinesStr);
-
-		string numVariablesStr;
-		getline(GeometryFile, numVariablesStr);
-		int numVariablesInt = stoi(numVariablesStr);
-
-		// Create a vector to contain all vertexes generated. 
-		vector<Vertex*> temp;
-
-		// Iterates through the total number of lines. 
-		for (int i = 0; i < numLinesInt; i++)
-		{
-			// Gets the first line as a string, removes all spaces and parentheses
-			string tempLines, result1, result2, result3;
-			getline(GeometryFile, tempLines);
-			std::remove_copy(tempLines.begin(), tempLines.end(), std::back_inserter(result1), ' ');
-			std::remove_copy(result1.begin(), result1.end(), std::back_inserter(result2), '(');
-			std::remove_copy(result2.begin(), result2.end(), std::back_inserter(result3), ')');
-
-			// Pre defines variables for converting from string to float.
-			float x = 0, y = 0, z = 0, nx = 0, ny = 0, nz = 0, r = 0, g = 0, b = 0;
-
-			// Iterates through number of variables in current line
-			for (int i = 0; i < numVariablesInt; i++)
+			// Switch case to convert value to proper variable
+			switch (i + 1)
 			{
-				// Gets the index between start and first number end defined by ','.
-				int lastPosNumIndex = result3.find(',');
-				// Copies this value into sting
-				string final(result3.begin(), result3.begin() + lastPosNumIndex);
-				// Erases that value from complete string
-				result3.erase(result3.begin(), result3.begin() + lastPosNumIndex + 1);
-
-				// Switch case to convert value to proper variable
-				switch (i + 1)
-				{
-				case 1:
-					x = stof(final);
-					break;
-				case 2:
-					y = stof(final);
-					break;
-				case 3:
-					z = stof(final);
-					break;
-				case 4:
-					nx = stof(final);
-					break;
-				case 5:
-					ny = stof(final);
-					break;
-				case 6:
-					nz = stof(final);
-					break;
-				case 7:
-					r = stof(final);
-					break;
-				case 8:
-					g = stof(final);
-					break;
-				case 9:
-					b = stof(final);
-					break;
-				default:
-					// Error handling if default case triggered. 
-					cout << "ERROR::READING_GEOMETRY_FILE::NO_MORE_VERTEX_ATTRIBUTE_LINES";
-					break;
-				}
-
+			case 1:
+				x = stof(final);
+				break;
+			case 2:
+				y = stof(final);
+				break;
+			case 3:
+				z = stof(final);
+				break;
+			case 4:
+				nx = stof(final);
+				break;
+			case 5:
+				ny = stof(final);
+				break;
+			case 6:
+				nz = stof(final);
+				break;
+			case 7:
+				r = stof(final);
+				break;
+			case 8:
+				g = stof(final);
+				break;
+			case 9:
+				b = stof(final);
+				break;
+			default:
+				// Error handling if default case triggered. 
+				cout << "ERROR::READING_GEOMETRY_FILE::NO_MORE_VERTEX_ATTRIBUTE_LINES";
+				break;
 			}
 
-			// creates the new vertex with the given variables.
-			temp.push_back(CreateNewVertex(x, y, z, nx, ny, nz, r, g, b));
 		}
 
-		// close file when finished reading it
-		GeometryFile.close();
-
-		return temp;
+		// creates the new vertex with the given variables.
+		temp.push_back(CreateNewVertex(x, y, z, nx, ny, nz, r, g, b));
 	}
 
-	vector<Normal*> Geometry::readNormalsFromFile(const char* _filePath)
+	// close file when finished reading it
+	GeometryFile.close();
+
+	return temp;
+}
+
+vector<Normal*> Geometry::readNormalStructFromFile(const char* _filePath)
+{
+	ifstream GeometryFile;
+	// Open the txt file containing geometry data.
+	GeometryFile.open(_filePath);
+
+	// First line defines how many lines there are total
+	// Extract and convert to int
+	string numLinesStr;
+	getline(GeometryFile, numLinesStr);
+	int numLinesInt = stoi(numLinesStr);
+
+	string numVariablesStr;
+	getline(GeometryFile, numVariablesStr);
+	int numVariablesInt = stoi(numVariablesStr);
+
+	// Create a vector to contain all vertexes generated. 
+	vector<Normal*> temp;
+
+	// Iterates through the total number of lines. 
+	for (int i = 0; i < numLinesInt; i++)
 	{
-		ifstream GeometryFile;
-		// Open the txt file containing geometry data.
-		GeometryFile.open(_filePath);
+		// Gets the first line as a string, removes all spaces and parentheses
+		string tempLines, result1, result2, result3;
+		getline(GeometryFile, tempLines);
+		std::remove_copy(tempLines.begin(), tempLines.end(), std::back_inserter(result1), ' ');
+		std::remove_copy(result1.begin(), result1.end(), std::back_inserter(result2), '(');
+		std::remove_copy(result2.begin(), result2.end(), std::back_inserter(result3), ')');
 
-		// First line defines how many lines there are total
-		// Extract and convert to int
-		string numLinesStr;
-		getline(GeometryFile, numLinesStr);
-		int numLinesInt = stoi(numLinesStr);
+		// Pre defines variables for converting from string to float.
+		float x = 0, y = 0, z = 0, r = 0, g = 0, b = 0;
 
-		string numVariablesStr;
-		getline(GeometryFile, numVariablesStr);
-		int numVariablesInt = stoi(numVariablesStr);
-
-		// Create a vector to contain all vertexes generated. 
-		vector<Normal*> temp;
-
-		// Iterates through the total number of lines. 
-		for (int i = 0; i < numLinesInt; i++)
+		// Iterates through number of variables in current line
+		for (int i = 0; i < numVariablesInt; i++)
 		{
-			// Gets the first line as a string, removes all spaces and parentheses
-			string tempLines, result1, result2, result3;
-			getline(GeometryFile, tempLines);
-			std::remove_copy(tempLines.begin(), tempLines.end(), std::back_inserter(result1), ' ');
-			std::remove_copy(result1.begin(), result1.end(), std::back_inserter(result2), '(');
-			std::remove_copy(result2.begin(), result2.end(), std::back_inserter(result3), ')');
+			// Gets the index between start and first number end defined by ','.
+			int lastPosNumIndex = result3.find(',');
+			// Copies this value into sting
+			string final(result3.begin(), result3.begin() + lastPosNumIndex);
+			// Erases that value from complete string
+			result3.erase(result3.begin(), result3.begin() + lastPosNumIndex + 1);
 
-			// Pre defines variables for converting from string to float.
-			float x = 0, y = 0, z = 0, r = 0, g = 0, b = 0;
-
-			// Iterates through number of variables in current line
-			for (int i = 0; i < numVariablesInt; i++)
+			// Switch case to convert value to proper variable
+			switch (i + 1)
 			{
-				// Gets the index between start and first number end defined by ','.
-				int lastPosNumIndex = result3.find(',');
-				// Copies this value into sting
-				string final(result3.begin(), result3.begin() + lastPosNumIndex);
-				// Erases that value from complete string
-				result3.erase(result3.begin(), result3.begin() + lastPosNumIndex + 1);
-
-				// Switch case to convert value to proper variable
-				switch (i + 1)
-				{
-				case 1:
-					x = stof(final);
-					break;
-				case 2:
-					y = stof(final);
-					break;
-				case 3:
-					z = stof(final);
-					break;
-				case 4:
-					r = stof(final);
-					break;
-				case 5:
-					g = stof(final);
-					break;
-				case 6:
-					b = stof(final);
-					break;
-				default:
-					// Error handling if default case triggered. 
-					cout << "ERROR::READING_GEOMETRY_FILE::NO_MORE_VERTEX_ATTRIBUTE_LINES";
-					break;
-				}
-
+			case 1:
+				x = stof(final);
+				break;
+			case 2:
+				y = stof(final);
+				break;
+			case 3:
+				z = stof(final);
+				break;
+			case 4:
+				r = stof(final);
+				break;
+			case 5:
+				g = stof(final);
+				break;
+			case 6:
+				b = stof(final);
+				break;
+			default:
+				// Error handling if default case triggered. 
+				cout << "ERROR::READING_GEOMETRY_FILE::NO_MORE_VERTEX_ATTRIBUTE_LINES";
+				break;
 			}
 
-			// creates the new vertex with the given variables.
-			temp.push_back(CreateNewNormal(x, y, z, r, g, b));
 		}
 
-		// close file when finished reading it
-		GeometryFile.close();
-
-		return temp;
+		// creates the new vertex with the given variables.
+		temp.push_back(CreateNewNormal(x, y, z, r, g, b));
 	}
 
-	Vertex* Geometry::CreateNewVertex(float _x, float _y, float _z, float _nx, float _ny, float _nz, float _r, float _g, float _b)
+	// close file when finished reading it
+	GeometryFile.close();
+
+	return temp;
+}
+
+Vertex* Geometry::CreateNewVertex(float _x, float _y, float _z, float _nx, float _ny, float _nz, float _r, float _g, float _b)
+{
+	Vertex* NewVertex = new Vertex();
+	NewVertex->x = _x;
+	NewVertex->y = _y;
+	NewVertex->z = _z;
+	NewVertex->nx = _nx;
+	NewVertex->ny = _ny;
+	NewVertex->nz = _nz;
+	NewVertex->r = _r;
+	NewVertex->g = _g;
+	NewVertex->b = _b;
+	return NewVertex;
+}
+
+Normal* Geometry::CreateNewNormal(float _x, float _y, float _z, float _r, float _g, float _b)
+{
+	Normal* NewNormal = new Normal();
+	NewNormal->x = _x;
+	NewNormal->y = _y;
+	NewNormal->z = _z;
+	NewNormal->r = _r;
+	NewNormal->g = _g;
+	NewNormal->b = _b;
+	return NewNormal;
+}
+
+void Geometry::writeVertexToConsole(vector<Vertex*> vectorToPrint)
+{
+	for (int i = 0; i < vectorToPrint.size(); i++)
 	{
-		Vertex* NewVertex = new Vertex();
-		NewVertex->x = _x;
-		NewVertex->y = _y;
-		NewVertex->z = _z;
-		NewVertex->nx = _nx;
-		NewVertex->ny = _ny;
-		NewVertex->nz = _nz;
-		NewVertex->r = _r;
-		NewVertex->g = _g;
-		NewVertex->b = _b;
-		return NewVertex;
+		cout << "x = " << vectorToPrint[i]->x << ", ";
+		cout << "y = " << vectorToPrint[i]->y << ", ";
+		cout << "z = " << vectorToPrint[i]->z << ", ";
+		cout << "r = " << vectorToPrint[i]->r << ", ";
+		cout << "g = " << vectorToPrint[i]->g << ", ";
+		cout << "b = " << vectorToPrint[i]->b << ", ";
+		cout << endl;
 	}
+}
 
-	Normal* Geometry::CreateNewNormal(float _x, float _y, float _z, float _r, float _g, float _b)
-	{
-		Normal* NewNormal = new Normal();
-		NewNormal->x = _x;
-		NewNormal->y = _y;
-		NewNormal->z = _z;
-		NewNormal->r = _r;
-		NewNormal->g = _g;
-		NewNormal->b = _b;
-		return NewNormal;
-	}
+// ---------- Getters and Setters --------------
 
-	void Geometry::writeVertexToConsole(vector<Vertex*> vectorToPrint)
-	{
-		for (int i = 0; i < vectorToPrint.size(); i++)
-		{
-			cout << "x = " << vectorToPrint[i]->x << ", ";
-			cout << "y = " << vectorToPrint[i]->y << ", ";
-			cout << "z = " << vectorToPrint[i]->z << ", ";
-			cout << "r = " << vectorToPrint[i]->r << ", ";
-			cout << "g = " << vectorToPrint[i]->g << ", ";
-			cout << "b = " << vectorToPrint[i]->b << ", ";
-			cout << endl;
-		}
-	}
+void Geometry::SetShouldDraw(bool state)
+{
+	ShouldRender = state;
+}

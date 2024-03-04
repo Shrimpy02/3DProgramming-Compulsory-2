@@ -1,8 +1,10 @@
 #pragma once
+// Class includes
 #include "Geometry.h"
 
+// namespaces
 using namespace std;
-
+using namespace glm;
 class DefaultPlane : public Geometry
 {
 public:
@@ -11,18 +13,13 @@ public:
 private:
     // ---------- Local Constants --------------
 
-	// World Transform
-    Shader* ObjectShader = nullptr;
-
-    vec3 WorldPosition;
-    vec3 WorldScale;
-    float WorldRotationInDegrees;
-    vec3 WorldRotationAxis;
+    // Current Shader
+    class Shader* ObjectShader = nullptr;
 
     // Meta
     const int NumVariables = 9;
 
-    // Colors
+    // Color
     const float r = 0.5f;
     const float g = 0.5f;
     const float b = 0.5f;
@@ -46,12 +43,22 @@ public:
 				  float _worldRotationInDegrees = 0.f,
 				 vec3 _worldRotationAxis = vec3(0.f, 0.f, 1.f));
 
+    ~DefaultPlane();
 
     void Initialize() override;
 
+    void BeginPlayGeometry() override;
+
+    void TickVertexGeometry(float deltatime) override;
+
+    bool CheckCollision(Geometry* _otherGeometry) override;
+
+    void DoCollision(Geometry* _otherGeometry) override;
+
     void drawVertexGeometry() override;
 
-	void TickVertexGeometry();
+    void Move(vec3 movementDirection, float deltatime) override;
+
 
 private:
     // ---------- Local functions --------------
@@ -61,6 +68,7 @@ private:
 public:
     // ---------- Getters and setters --------------
 
+    void SetShouldDraw(bool state) override;
 
 
 };

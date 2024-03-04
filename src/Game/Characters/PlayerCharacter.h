@@ -14,13 +14,13 @@ public:
 
 	float MovementSpeed = 1.f;
 
-	class DefaultCube* Hitbox;
+	class DefaultCube* Hitbox = nullptr;
 
 private:
 	// ---------- Local Constants --------------
 	float deltaTime;
 
-	class Camera* PlayerCamera;
+	class Camera* PlayerCamera = nullptr;
 
 	
 

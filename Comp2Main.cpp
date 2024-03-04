@@ -54,7 +54,7 @@ int main()
 		// ---------- Drawing ----------
 
 		// Game
-		GameManagerObject->Tick(deltaTime);
+		GameManagerObject->Tick((float)deltaTime);
 
 		// GLFW: swap buffers and process events
 		// -------------------------------------------

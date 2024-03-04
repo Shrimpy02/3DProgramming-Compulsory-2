@@ -1,10 +1,18 @@
+#pragma once
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
-#include <vector>
+
+// Class includes
 #include "glm/vec3.hpp"
+#include <glad/glad.h>
+
+// C++ includes
+#include <vector>
+#include <algorithm>
+#include <iostream>
 #include <iostream>
 
-
+// structs
 struct Vertex
 {
 	float x, y, z; // Position
@@ -18,9 +26,6 @@ struct Normal
 	float r, g, b; // Color
 };
 
-// Forward Declerations
-class Shader;
-
 // Namespaces
 using namespace std;
 using namespace glm;
@@ -30,9 +35,14 @@ class Geometry
 public:
 	// ---------- Global Constants --------------
 
+	// World data
 	vec3 WorldPosition;
 	vec3 WorldScale;
+	float WorldRotationInDegrees;
+	vec3 WorldRotationAxis;
+
 	bool ShouldRender = true;
+
 private:
 
 	// ---------- Local Constants --------------
@@ -40,10 +50,6 @@ private:
 	unsigned int VAO, VBO, EBO;
 
 	int numVertices = 0;
-
-	bool doneonce = false;
-
-
 
 	// ---------- Global functions --------------
 
@@ -54,51 +60,50 @@ public:
 
 	virtual void Initialize();
 
-	void Initialize(vector<float>* geometry, int _numVariables);
+	virtual void Initialize(vector<float>* geometry, int _numVariables);
 
-	virtual void drawVertexGeometry();
+	virtual void BeginPlayGeometry();
 
-	vector<float>* InitializeVertexGeometryFromFile(const char* _filePath);
-
-	vector<float>* InitializeNormalGeometryFromFile(const char* _filePath);
-
-	void bindBufferData(vector<float> _vertices);
-
-	void bindBufferData(vector<float>* _vertices);
-
-	void bindBufferData(vector<float> _vertices, vector<unsigned int> _indices);
-
-	void createAttributePointers(bool pos);
-
-	void createAttributePointers(bool pos, bool color);
-
-	void createAttributePointers(bool pos, bool normals, bool color);
-
-	// added afterwards; needs cleaning:
-
-	virtual void TickVertexGeometry();
-
-	virtual void Move(vec3 movementDirection, float deltatime);
+	virtual void TickVertexGeometry(float deltatime);
 
 	virtual bool CheckCollision(Geometry* _otherObject);
 
 	virtual void DoCollision(Geometry* _otherGeometry);
 
-	virtual bool ShouldDraw();
+	virtual void drawVertexGeometry();
+
+	virtual void Move(vec3 movementDirection, float deltatime);
+
+	// Reading from file
+	virtual vector<float>* InitializeVertexGeometryFromFile(const char* _filePath);
+
+	virtual vector<float>* InitializeNormalGeometryFromFile(const char* _filePath);
 
 private:
 
 	// ---------- Local functions --------------
 
+	// Bind data to buffers
+	void bindBufferData(vector<float>* _vertices);
+
+	void bindBufferData(vector<float> _vertices, vector<unsigned int> _indices);
+
+	// Data attributes
+	void CreateAttributePointers(bool pos);
+
+	void CreateAttributePointers(bool pos, bool color);
+
+	void CreateAttributePointers(bool pos, bool normals, bool color);
+
+	// reading from file:
+
 	vector<float>* genVerticesFromStruct(vector<Vertex*> _vertices);
 
-	vector<float>* genNormalsFromStruct(vector<Normal*> _normals);
+	vector<float>* genNormalsFromNormalStruct(vector<Normal*> _normals);
 
-	vector<unsigned int> GenerateIndices(vector<Vertex*> _vertices);
+	vector<Vertex*> readStructFromFile(const char* _filePath);
 
-	vector<Vertex*> readVerticesFromFile(const char* _filePath);
-
-	vector<Normal*> readNormalsFromFile(const char* _filePath);
+	vector<Normal*> readNormalStructFromFile(const char* _filePath);
 
 	Vertex* CreateNewVertex(float _x, float _y, float _z, float _nx, float _ny, float _nz, float _r, float _g, float _b);
 
@@ -108,7 +113,7 @@ private:
 
 	// ---------- Getters and setters --------------
 public:
-
+	virtual void SetShouldDraw(bool state);
 
 };
 

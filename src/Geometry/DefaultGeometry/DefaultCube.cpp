@@ -1,7 +1,6 @@
+// Class includes
 #include "DefaultCube.h"
 #include "shader.h"
-#include <algorithm>
-#include <iostream>
 
 DefaultCube::DefaultCube()
 {
@@ -16,31 +15,24 @@ DefaultCube::DefaultCube(Shader* _shader, vec3 _worldPosition, vec3 _worldScale,
 	WorldRotationAxis = _worldRotationAxis;
 }
 
+DefaultCube::~DefaultCube()
+{
+	Geometry::~Geometry();
+}
+
 void DefaultCube::Initialize()
 {
 	Geometry::Initialize(&CubeVertices, NumVariables);
 }
 
-void DefaultCube::drawVertexGeometry()
+void DefaultCube::BeginPlayGeometry()
 {
-	if(ObjectShader)
-	{
-		ObjectShader->use();
-		ObjectShader->processTransformations(WorldPosition, WorldScale, WorldRotationInDegrees, WorldRotationAxis);
-	}
-	
-	Geometry::drawVertexGeometry();
+	Geometry::BeginPlayGeometry();
 }
 
-void DefaultCube::TickVertexGeometry()
+void DefaultCube::TickVertexGeometry(float deltatime)
 {
-	
-}
-
-void DefaultCube::Move(vec3 movementDirection, float deltatime)
-{
-	WorldPosition += (movementDirection * deltatime) / vec3(10,10,10);
-
+	Geometry::TickVertexGeometry(deltatime);
 }
 
 bool DefaultCube::CheckCollision(Geometry* _otherGeometry)
@@ -74,16 +66,36 @@ void DefaultCube::DoCollision(Geometry* _otherGeometry)
 	// for now there can only be collisions with default cubes.
 	const DefaultCube* otherObject = dynamic_cast<const DefaultCube*>(_otherGeometry);
 
-
+	// temp delete collided with object
 	otherObject->~DefaultCube();
 	delete(otherObject);
-	
+
+	// temp text
 	cout << "You got a trophie!" << endl;
 
 }
 
-bool DefaultCube::ShouldDraw()
+void DefaultCube::drawVertexGeometry()
 {
-	return ShouldRender;
+	if(ShouldRender)
+	{
+		if (ObjectShader)
+		{
+			ObjectShader->use();
+			ObjectShader->processTransformations(WorldPosition, WorldScale, WorldRotationInDegrees, WorldRotationAxis);
+		}
+
+		Geometry::drawVertexGeometry();
+	}
+}
+
+void DefaultCube::Move(vec3 movementDirection, float deltatime)
+{
+	Geometry::Move(movementDirection, deltatime);
+}
+
+void DefaultCube::SetShouldDraw(bool state)
+{
+	ShouldRender = state;
 }
 

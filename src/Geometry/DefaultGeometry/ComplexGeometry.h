@@ -1,28 +1,24 @@
 #pragma once
+// Class includes
 #include "Geometry.h"
 
+// namespaces
 using namespace std;
-
+using namespace glm;
 class ComplexGeometry : public Geometry
 {
 public:
-    // ---------- Global Constants --------------
+    // ---------- Global Constants -------------
 
 private:
     // ---------- Local Constants --------------
 
-    // World Transform
-    Shader* ObjectShader = nullptr;
-
-    vec3 WorldPosition;
-    vec3 WorldScale;
-    float WorldRotationInDegrees;
-    vec3 WorldRotationAxis;
+// Current Shader
+    class Shader* ObjectShader = nullptr;
 
     // Meta
+    const int NumVariables = 6; // This is outdated and should be gotten from function that reads file
     const char* FilePath;
-
-	const int NumVariables = 6;
 
     vector<float>* ComplexGeometryVertices;
 
@@ -35,11 +31,21 @@ public:
         float _worldRotationInDegrees = 0.f,
         vec3 _worldRotationAxis = vec3(0.f, 0.f, 1.f));
 
+    ~ComplexGeometry();
+
     void Initialize() override;
+
+    void BeginPlayGeometry() override;
+
+    void TickVertexGeometry(float deltatime) override;
+
+    bool CheckCollision(Geometry* _otherGeometry) override;
+
+    void DoCollision(Geometry* _otherGeometry) override;
 
     void drawVertexGeometry() override;
 
-    void TickVertexGeometry();
+    void Move(vec3 movementDirection, float deltatime) override;
 
 private:
     // ---------- Local functions --------------
@@ -49,7 +55,7 @@ private:
 public:
     // ---------- Getters and setters --------------
 
-
+    void SetShouldDraw(bool state) override;
 
 };
 

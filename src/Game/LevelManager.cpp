@@ -8,6 +8,7 @@
 #include "DefaultGeometry/DefaultPyramid.h"
 #include "DefaultGeometry/DefaultSphere.h"
 #include "DefaultGeometry/ComplexGeometry.h"
+#include "GameObjects/Trophie.h"
 #include "GLFW/glfw3.h"
 
 LevelManager::LevelManager()
@@ -26,9 +27,9 @@ LevelManager::LevelManager(class Camera* _camera, class PlayerCharacter* _player
 LevelManager::~LevelManager()
 {
 	// Deconstructs all level geometry
-	for(auto* _geometry : GeometryInLevel)
+	for(auto* _geometry : StaticGeometryInLevel)
 	{
-		DeleteGeometry(_geometry);
+		DeleteObject(_geometry);
 	}
 
 	// Deconstructs Shaders
@@ -47,47 +48,76 @@ void LevelManager::BeginPlay()
 	// Construct and add geometry to level
 
 	// Light:
-	GeometryInLevel.push_back(new DefaultSphere(LightShader, vec3(0, 10, 0)));
+	StaticGeometryInLevel.push_back(new DefaultSphere(LightShader, 3,vec3(0, 10, 0)));
 
 	// World:
-	GeometryInLevel.push_back(new DefaultPlane(DefaultShader, vec3(0, 0, -1), vec3(10, 1, 15)));
-
-	// Collision test
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(1, 0, 2), vec3(0.4f, 0.4f, 0.4f)));
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-1, 0.6, 2), vec3(0.4f, 0.4f, 0.4f)));
+	StaticGeometryInLevel.push_back(new DefaultPlane(DefaultShader, vec3(0, 0, -1), vec3(15, 1, 15)));
 
 	// House:
 	// walls
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-2, 0.5, -4), vec3(3, 2, 0.5)));
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(2, 0.5, -4), vec3(3, 2, 0.5)));
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-3.7, 0.5, -6.1), vec3(5, 2, 0.5),90,vec3(0,1,0)));
-	GeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(3.7, 0.5, -6.1), vec3(5, 2, 0.5), 90, vec3(0, 1, 0)));
+	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-2, 0.5, -4), vec3(3, 2, 0.5)));
+	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(2, 0.5, -4), vec3(3, 2, 0.5)));
+	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-3.7, 0.5, -6.1), vec3(5, 2, 0.5),90,vec3(0,1,0)));
+	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(3.7, 0.5, -6.1), vec3(5, 2, 0.5), 90, vec3(0, 1, 0)));
 	// Ceiling
-	GeometryInLevel.push_back(new DefaultPyramid(DefaultShader, vec3(0, 2.5, -6.1), vec3(8.2, 2, 6)));
+	StaticGeometryInLevel.push_back(new DefaultPyramid(DefaultShader, vec3(0, 2.5, -6.1), vec3(8.2, 2, 6)));
+
+	// Construct and add game objects to level
+	// Trophies
+	GameObjectsInLevel.push_back(new Trophie(vec3(6, 0.6, 4), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(6, 0.6, 1), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(6, 0.6, -2), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(6, 0.6, -5), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, 4), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, 1), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, -2), vec3(0.4f, 0.4f, 0.4f)));
+	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, -5), vec3(0.4f, 0.4f, 0.4f)));
+
 
 	// Player:
 	DefaultCube* playerHitbox = new DefaultCube(DefaultShader, vec3(0, 0, 0), vec3(0.4, 0.8, 0.4));
 	
 
 	// Initialize all level geometry
-	for (auto* _geometry : GeometryInLevel)
+	for (auto* _geometry : StaticGeometryInLevel)
 	{
+		InitializeGeometry(_geometry);
+	}
+
+	// Initialize all level gameobjects
+	for (auto* _geometry : GameObjectsInLevel)
+	{
+		_geometry->AttachGeometry(new DefaultCube(DefaultShader), new DefaultCube(DefaultShader));
 		InitializeGeometry(_geometry);
 	}
 
 	// Initialize player geometry
 	Player->InitializeHitbox(playerHitbox);
-	GeometryInLevel.push_back(playerHitbox);
+	StaticGeometryInLevel.push_back(playerHitbox);
+
+	// Runs begin play
+	for (auto* _geometry : StaticGeometryInLevel)
+	{
+		BeginPlayGeometry(_geometry);
+	}
+
+	for (auto* _geometry : GameObjectsInLevel)
+	{
+		BeginPlayGeometry(_geometry);
+	}
+
 }
 
 void LevelManager::Tick(float deltatime)
 {
-	//for (auto* _geometry : GeometryInLevel)
-	//{
-	//	TickGeometry(_geometry);
-	//}
-	//GeometryInLevel[2]->Move(vec3(-2.0f, 0.0f, 0.0f), deltatime);
-	//GeometryInLevel[3]->Move(vec3(2.0f, 0.0f, 0.0f), deltatime);
+	for (auto* _geometry : StaticGeometryInLevel)
+	{
+		TickGeometry(_geometry, deltatime);
+	}
+	for (auto* _geometry : GameObjectsInLevel)
+	{
+		TickGeometry(_geometry, deltatime);
+	}
 }
 
 void LevelManager::TickDraw()
@@ -102,93 +132,126 @@ void LevelManager::TickDraw()
 	DefaultShader->setVec3("lightPos", lightPos);
 	DefaultShader->setVec3("viewPos", viewPos);
 
-	for (auto* _geometry : GeometryInLevel)
+	for (auto* _geometry : StaticGeometryInLevel)
 	{
 		DrawGeometry(_geometry);
 	}
 
+	for (auto* _geometry : GameObjectsInLevel)
+	{
+		DrawGeometry(_geometry);
+	}
 }
 
 void LevelManager::CheckCollision()
 {
-	//size_t numGeometries = GeometryInLevel.size();
-
-	//for (size_t i = 0; i < numGeometries; ++i)
-	//{
-	//	for (size_t j = i + 1; j < numGeometries; ++j)
-	//	{
-	//		if (GeometryInLevel[i]->CheckCollision(GeometryInLevel[j])) {
-	//			// Collision detected! Handle it as needed.
-	//			std::cout << "Collision between geometries " << i << " and " << j << std::endl;
-	//			// Add collision response code here...
-	//		}
-	//	}
-	//}
-
-	if(erase)
+	for(auto* _GameObject : GameObjectsInLevel)
 	{
-		if (GeometryInLevel[9]->CheckCollision(GeometryInLevel[3]))
+		if(_GameObject->Hitbox->CheckCollision(Player->Hitbox))
 		{
-			GeometryInLevel[9]->DoCollision(GeometryInLevel[3]);
-			GeometryInLevel.erase(remove(GeometryInLevel.begin(), GeometryInLevel.end(), GeometryInLevel[3]), GeometryInLevel.end());
-			erase = false;
+			DoCollision(_GameObject);
 		}
 	}
-
 }
 
-void LevelManager::AddObjectToLevel(Geometry* _geometryToAdd)
-{
-	GeometryInLevel.push_back(_geometryToAdd);
-}
+// PRIVATE -------------------------------
 
 template <typename T>
-void LevelManager::CollideGeometry(T* collider, T* collided)
+void LevelManager::InitializeGeometry(T* _geometry)
 {
 	if constexpr (is_same_v<T, Geometry>)
 	{
-		collider->DoCollision(collider, collided);
+		_geometry->Initialize();
+	}
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		_geometry->RenderBox->Initialize();
+		_geometry->Hitbox->Initialize();
 	}
 }
 
 template <typename T>
-void LevelManager::TickGeometry(T* _geometry)
+void LevelManager::BeginPlayGeometry(T* _geometry)
 {
 	if constexpr (is_same_v<T, Geometry>)
 	{
-		_geometry->TickVertexGeometry();
+		_geometry->BeginPlayGeometry();
 	}
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		_geometry->BeginPlayObject();
+	}
+}
+
+
+template <typename T>
+void LevelManager::TickGeometry(T* _geometry,float deltatime)
+{
+	if constexpr (is_same_v<T, Geometry>)
+	{
+		_geometry->TickVertexGeometry(deltatime);
+	}
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		_geometry->TickObject(deltatime);
+	}
+
 }
 
 template<typename T>
 void LevelManager::DrawGeometry(T* _geometry)
 {
-	if (_geometry->ShouldDraw() == true)
+	if constexpr (is_same_v<T, Geometry>)
 	{
-		if constexpr (is_same_v<T, Geometry>)
-		{
-			_geometry->drawVertexGeometry();
-		}
+		_geometry->drawVertexGeometry();
+	}
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		_geometry->RenderBox->drawVertexGeometry();
+		_geometry->Hitbox->drawVertexGeometry();
 	}
 }
 
 template <typename T>
-void LevelManager::DeleteGeometry(T* _geometry)
+void LevelManager::DoCollision(T* _geometry)
+{
+	if constexpr (is_same_v<T, Geometry>)
+	{
+		// Temp: Do nothing when player collides with geometry
+	}
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		DeleteObject(_geometry);
+	}
+}
+
+template <typename T>
+void LevelManager::DeleteObject(T* _geometry)
 {
 	if constexpr(is_same_v<T,Geometry>)
 	{
-		_geometry->~Geometry();
+		// Remove object fromm level static geometry vector
+		auto _ElementToRemove = std::find(StaticGeometryInLevel.begin(), StaticGeometryInLevel.end(), _geometry);
+		if (_ElementToRemove != StaticGeometryInLevel.end())
+			StaticGeometryInLevel.erase(_ElementToRemove);
+
+		_geometry->~Geometry(); // its being wierd...
+		//delete _geometry;
+	}
+
+	else if constexpr (is_same_v<T, GameObject>)
+	{
+		// Remove object fromm level object vector
+		auto _ElementToRemove = std::find(GameObjectsInLevel.begin(), GameObjectsInLevel.end(), _geometry);
+		if (_ElementToRemove != GameObjectsInLevel.end()) 
+			GameObjectsInLevel.erase(_ElementToRemove);
+		
+		_geometry->RenderBox->~DefaultCube();
+		_geometry->Hitbox->~DefaultCube();
+
+		_geometry->~GameObject();
 		delete _geometry;
 	}
-
 }
 
-template <typename T>
-void LevelManager::InitializeGeometry(T* _geometry)
-{
-	if constexpr(is_same_v<T, Geometry>) 
-	{
-		_geometry->Initialize();
-	}
-}
 
