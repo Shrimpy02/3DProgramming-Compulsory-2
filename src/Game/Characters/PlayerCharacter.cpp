@@ -79,4 +79,11 @@ void PlayerCharacter::ProcessInput(GLFWwindow* window)
 		PlayerCamera->ProcessKeyboard(UP, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
 		PlayerCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		IsInteracting = true;
+	else
+		IsInteracting = false;
+
 }
+ 

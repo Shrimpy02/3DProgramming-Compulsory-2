@@ -139,6 +139,7 @@
     <ClCompile Include="glad.c" />
     <ClCompile Include="src\Game\Characters\PlayerCharacter.cpp" />
     <ClCompile Include="src\Game\GameManager.cpp" />
+    <ClCompile Include="src\Game\GameObjects\Door.cpp" />
     <ClCompile Include="src\Game\GameObjects\GameObject.cpp" />
     <ClCompile Include="src\Game\LevelManager.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\ComplexGeometry.cpp" />
@@ -147,7 +148,7 @@
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultPyramid.cpp" />
     <ClCompile Include="src\Geometry\DefaultGeometry\DefaultSphere.cpp" />
     <ClCompile Include="src\Geometry\Geometry.cpp" />
-    <ClCompile Include="Trophie.cpp" />
+    <ClCompile Include="src\Game\GameObjects\Trophie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\Include\glad\glad.h" />
@@ -444,6 +445,7 @@
     <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="src\Game\Characters\PlayerCharacter.h" />
     <ClInclude Include="src\Game\GameManager.h" />
+    <ClInclude Include="src\Game\GameObjects\Door.h" />
     <ClInclude Include="src\Game\GameObjects\GameObject.h" />
     <ClInclude Include="src\Game\GameObjects\Trophie.h" />
     <ClInclude Include="src\Game\LevelManager.h" />

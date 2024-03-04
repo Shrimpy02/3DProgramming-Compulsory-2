@@ -3,8 +3,6 @@
 #include "Geometry.h"
 
 // C++ includes
-#include <algorithm>
-#include <iostream>
 
 // namespaces
 using namespace std;

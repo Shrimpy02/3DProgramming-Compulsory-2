@@ -1,7 +1,7 @@
 #include "GameObjects/Trophie.h"
 
 #include "GLFW/glfw3.h"
-#include <algorithm>
+
 Trophie::Trophie()
 {
 }
@@ -14,6 +14,11 @@ Trophie::Trophie(vec3 _worldPosition, vec3 _worldScale, float _worldRotationInDe
 	WorldRotationAxis = _worldRotationAxis;
 }
 
+Trophie::~Trophie()
+{
+	GameObject::~GameObject();
+}
+
 void Trophie::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _hitBoxReference)
 {
 
@@ -22,9 +27,8 @@ void Trophie::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _hit
 
 void Trophie::BeginPlayObject()
 {
-	LevitateOffsetTime = 1 + (rand() % 2);
-
 	GameObject::BeginPlayObject();
+
 }
 
 void Trophie::TickObject(float deltatime)
@@ -35,6 +39,5 @@ void Trophie::TickObject(float deltatime)
 
 void Trophie::Levitate(float deltatime)
 {
-	
-	WorldPosition.y = (LevitateOffsetTime + sin(glfwGetTime())) / 6;
+	WorldPosition.y = (2 + sin(glfwGetTime())) / 6;
 }

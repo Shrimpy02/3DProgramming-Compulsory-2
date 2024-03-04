@@ -49,6 +49,5 @@ private:
 public:
 	// -------- Getters and setters ------------
 
-
 };
 

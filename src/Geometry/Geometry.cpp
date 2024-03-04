@@ -2,8 +2,6 @@
 #include "Geometry.h"
 #include "Shader.h"
 
-
-
 // Name Space
 using namespace std;
 using namespace glm;

@@ -8,6 +8,7 @@
 #include "DefaultGeometry/DefaultPyramid.h"
 #include "DefaultGeometry/DefaultSphere.h"
 #include "DefaultGeometry/ComplexGeometry.h"
+#include "GameObjects/Door.h"
 #include "GameObjects/Trophie.h"
 #include "GLFW/glfw3.h"
 
@@ -73,6 +74,8 @@ void LevelManager::BeginPlay()
 	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, -2), vec3(0.4f, 0.4f, 0.4f)));
 	GameObjectsInLevel.push_back(new Trophie(vec3(-6, 0.6, -5), vec3(0.4f, 0.4f, 0.4f)));
 
+	// Doors
+	GameObjectsInLevel.push_back(new Door(vec3(0, 0.5, -4), vec3(1, 2.2, 0.3)));
 
 	// Player:
 	DefaultCube* playerHitbox = new DefaultCube(DefaultShader, vec3(0, 0, 0), vec3(0.4, 0.8, 0.4));
@@ -147,8 +150,9 @@ void LevelManager::CheckCollision()
 {
 	for(auto* _GameObject : GameObjectsInLevel)
 	{
-		if(_GameObject->Hitbox->CheckCollision(Player->Hitbox))
+		if (_GameObject->Hitbox->CheckCollision(Player->Hitbox))
 		{
+			// and player press button?
 			DoCollision(_GameObject);
 		}
 	}
@@ -195,7 +199,6 @@ void LevelManager::TickGeometry(T* _geometry,float deltatime)
 	{
 		_geometry->TickObject(deltatime);
 	}
-
 }
 
 template<typename T>
@@ -208,7 +211,9 @@ void LevelManager::DrawGeometry(T* _geometry)
 	else if constexpr (is_same_v<T, GameObject>)
 	{
 		_geometry->RenderBox->drawVertexGeometry();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		_geometry->Hitbox->drawVertexGeometry();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 }
 
@@ -221,7 +226,17 @@ void LevelManager::DoCollision(T* _geometry)
 	}
 	else if constexpr (is_same_v<T, GameObject>)
 	{
-		DeleteObject(_geometry);
+		if (dynamic_cast<Trophie*>(_geometry))
+		{
+			DeleteObject(_geometry);
+		}
+		else if (auto* door = dynamic_cast<Door*>(_geometry))
+		{
+			if(Player->GetIsInteracting())
+			{
+				door->ToggleDoor();
+			}
+		}
 	}
 }
 

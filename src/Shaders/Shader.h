@@ -109,7 +109,6 @@ public:
 		model = translate(model, positionOffset);
 		model = rotate(model, radians(rotationInDegreesOffset), rotationAxis);
 		model = scale(model, scaleOffset);
-		
 
 		setMat4("model", model);
 

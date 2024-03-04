@@ -22,7 +22,7 @@ private:
 
 	class Camera* PlayerCamera = nullptr;
 
-	
+	bool IsInteracting = false;
 
 public:
 	// ---------- Global functions --------------
@@ -44,13 +44,13 @@ public:
 private:
 	// ---------- Local functions --------------
 
-
-
 public:
 	// -------- Getters and setters ------------
 
 	Camera* GetCamera() { return PlayerCamera; }
 	template <typename T>
 	void SetHitbox(T* _hitbox) { Hitbox = _hitbox; }
+
+	bool GetIsInteracting() { return IsInteracting; }
 };
 

@@ -22,11 +22,16 @@ void GameObject::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _
 {
 	RenderBox = _renderBoxReference;
 	Hitbox = _hitBoxReference;
-	Hitbox->SetShouldDraw(false);
+	//Hitbox->SetShouldDraw(false);
 }
 
 void GameObject::BeginPlayObject()
 {
+	if (!Hitbox) return;
+	Hitbox->WorldPosition = WorldPosition;
+	Hitbox->WorldScale = WorldScale * vec3(1.5, 1.5, 1.5);
+	Hitbox->WorldRotationInDegrees = WorldRotationInDegrees;
+	Hitbox->WorldRotationAxis = WorldRotationAxis;
 }
 
 void GameObject::TickObject(float deltatime)
@@ -37,10 +42,9 @@ void GameObject::TickObject(float deltatime)
 	RenderBox->WorldRotationInDegrees = WorldRotationInDegrees;
 	RenderBox->WorldRotationAxis = WorldRotationAxis;
 
-	if (!Hitbox) return;
-	Hitbox->WorldPosition = WorldPosition;
-	Hitbox->WorldScale = WorldScale*vec3(1.5,1.5,1.5);
-	Hitbox->WorldRotationInDegrees = WorldRotationInDegrees;
-	Hitbox->WorldRotationAxis = WorldRotationAxis;
+	//if (!Hitbox) return;
+	//Hitbox->WorldPosition = WorldPosition;
+	//Hitbox->WorldScale = WorldScale*vec3(1.5,1.5,1.5);
+	//Hitbox->WorldRotationInDegrees = WorldRotationInDegrees;
+	//Hitbox->WorldRotationAxis = WorldRotationAxis;
 }
-
