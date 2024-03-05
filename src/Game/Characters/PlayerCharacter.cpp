@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "Geometry.h"
+#include "NPC.h"
 #include "DefaultGeometry/DefaultCube.h"
 #include "GLFW/glfw3.h"
 #include "glm/vec3.hpp"
@@ -13,11 +14,13 @@ PlayerCharacter::PlayerCharacter()
 	PlayerCamera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 }
 
-PlayerCharacter::PlayerCharacter(vec3 _position)
+PlayerCharacter::PlayerCharacter(vec3 _worldPosition, vec3 _worldScale, float _worldRotationInDegrees, vec3 _worldRotationAxis)
 {
-	Position = _position;
-	PlayerCamera = new Camera(_position);
-	Hitbox = new DefaultCube();
+	WorldPosition = _worldPosition;
+	WorldScale = _worldScale;
+	WorldRotationInDegrees = _worldRotationInDegrees;
+	WorldRotationAxis = _worldRotationAxis;
+	PlayerCamera = new Camera(_worldPosition);
 }
 
 PlayerCharacter::~PlayerCharacter()
@@ -29,31 +32,24 @@ PlayerCharacter::~PlayerCharacter()
 	}
 }
 
-void PlayerCharacter::InitializeHitbox(class DefaultCube* _hitboxReference)
+void PlayerCharacter::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _hitBoxReference)
 {
-	Hitbox = _hitboxReference;
-	Hitbox->Initialize();
-	Hitbox->ShouldRender = false;
+	Character::AttachGeometry(_renderBoxReference, _hitBoxReference);
+	RenderBox->SetShouldDraw(false);
 }
 
-void PlayerCharacter::BeginPlay()
+void PlayerCharacter::BeginPlayCharacter()
 {
-	
+	Character::BeginPlayCharacter();
 }
 
-void PlayerCharacter::Tick(float deltatime)
+void PlayerCharacter::TickCharacter(float deltatime)
 {
 	deltaTime = deltatime;
-	Position = PlayerCamera->Position;
-	Yaw = -PlayerCamera->Yaw;
+	WorldPosition = PlayerCamera->Position;
+	WorldRotationInDegrees = -PlayerCamera->Yaw;
 
-	if(Hitbox)
-	{
-		Hitbox->WorldPosition = Position + vec3(0,-0.2, 0);
-		Hitbox->WorldRotationAxis = vec3(0.0f,1.0f,0.0f);
-		Hitbox->WorldRotationInDegrees = Yaw;
-	}
-	
+	Character::TickCharacter(deltatime);
 }
 
 void PlayerCharacter::ProcessInput(GLFWwindow* window)
@@ -84,6 +80,16 @@ void PlayerCharacter::ProcessInput(GLFWwindow* window)
 		IsInteracting = true;
 	else
 		IsInteracting = false;
+
+	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && CanChangePath)
+	{
+		CanChangePath = false;
+		NPCReference->ChangePath();
+	}
+	if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
+	{
+		CanChangePath = true;
+	}
 
 }
  

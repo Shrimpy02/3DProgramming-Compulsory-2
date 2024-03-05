@@ -21,14 +21,12 @@ Trophie::~Trophie()
 
 void Trophie::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _hitBoxReference)
 {
-
 	GameObject::AttachGeometry(_renderBoxReference, _hitBoxReference);
 }
 
 void Trophie::BeginPlayObject()
 {
 	GameObject::BeginPlayObject();
-
 }
 
 void Trophie::TickObject(float deltatime)

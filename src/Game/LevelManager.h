@@ -21,6 +21,8 @@ private:
 
 	vector<class GameObject*> GameObjectsInLevel;
 
+	vector<class Character*> CharactersInLevel;
+
 	class Camera* PlayerCamera;
 	class PlayerCharacter* Player;
 	unsigned int ScreenWidth;

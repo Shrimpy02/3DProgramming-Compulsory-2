@@ -3,6 +3,9 @@
 #include "Shader.h"
 #include "Game/Characters/PlayerCharacter.h"
 // Geometry
+
+
+#include "Characters/NPC.h"
 #include "DefaultGeometry/DefaultCube.h"
 #include "DefaultGeometry/DefaultPlane.h"
 #include "DefaultGeometry/DefaultPyramid.h"
@@ -77,9 +80,14 @@ void LevelManager::BeginPlay()
 	// Doors
 	GameObjectsInLevel.push_back(new Door(vec3(0, 0.5, -4), vec3(1, 2.2, 0.3)));
 
-	// Player:
-	DefaultCube* playerHitbox = new DefaultCube(DefaultShader, vec3(0, 0, 0), vec3(0.4, 0.8, 0.4));
-	
+	// Initialize Characters in Level
+	// Player
+	CharactersInLevel.push_back(Player);
+
+	//NPC
+	class NPC* npc1 = new NPC(vec3(0, 0.6, 4));
+	CharactersInLevel.push_back(npc1);
+	Player->SetNPCReference(npc1);
 
 	// Initialize all level geometry
 	for (auto* _geometry : StaticGeometryInLevel)
@@ -94,9 +102,12 @@ void LevelManager::BeginPlay()
 		InitializeGeometry(_geometry);
 	}
 
-	// Initialize player geometry
-	Player->InitializeHitbox(playerHitbox);
-	StaticGeometryInLevel.push_back(playerHitbox);
+	// Initialize all level characters
+	for (auto* _geometry : CharactersInLevel)
+	{
+		_geometry->AttachGeometry(new DefaultCube(DefaultShader), new DefaultCube(DefaultShader));
+		InitializeGeometry(_geometry);
+	}
 
 	// Runs begin play
 	for (auto* _geometry : StaticGeometryInLevel)
@@ -109,6 +120,10 @@ void LevelManager::BeginPlay()
 		BeginPlayGeometry(_geometry);
 	}
 
+	for (auto* _geometry : CharactersInLevel)
+	{
+		BeginPlayGeometry(_geometry);
+	}
 }
 
 void LevelManager::Tick(float deltatime)
@@ -118,6 +133,10 @@ void LevelManager::Tick(float deltatime)
 		TickGeometry(_geometry, deltatime);
 	}
 	for (auto* _geometry : GameObjectsInLevel)
+	{
+		TickGeometry(_geometry, deltatime);
+	}
+	for (auto* _geometry : CharactersInLevel)
 	{
 		TickGeometry(_geometry, deltatime);
 	}
@@ -144,6 +163,11 @@ void LevelManager::TickDraw()
 	{
 		DrawGeometry(_geometry);
 	}
+
+	for (auto* _geometry : CharactersInLevel)
+	{
+		DrawGeometry(_geometry);
+	}
 }
 
 void LevelManager::CheckCollision()
@@ -156,6 +180,7 @@ void LevelManager::CheckCollision()
 			DoCollision(_GameObject);
 		}
 	}
+
 }
 
 // PRIVATE -------------------------------
@@ -172,6 +197,11 @@ void LevelManager::InitializeGeometry(T* _geometry)
 		_geometry->RenderBox->Initialize();
 		_geometry->Hitbox->Initialize();
 	}
+	else if constexpr (is_same_v<T, Character>)
+	{
+		_geometry->RenderBox->Initialize();
+		_geometry->Hitbox->Initialize();
+	}
 }
 
 template <typename T>
@@ -184,9 +214,16 @@ void LevelManager::BeginPlayGeometry(T* _geometry)
 	else if constexpr (is_same_v<T, GameObject>)
 	{
 		_geometry->BeginPlayObject();
+		_geometry->RenderBox->BeginPlayGeometry();
+		_geometry->Hitbox->BeginPlayGeometry();
+	}
+	else if constexpr (is_same_v<T, Character>)
+	{
+		_geometry->BeginPlayCharacter();
+		_geometry->RenderBox->BeginPlayGeometry();
+		_geometry->Hitbox->BeginPlayGeometry();
 	}
 }
-
 
 template <typename T>
 void LevelManager::TickGeometry(T* _geometry,float deltatime)
@@ -198,6 +235,14 @@ void LevelManager::TickGeometry(T* _geometry,float deltatime)
 	else if constexpr (is_same_v<T, GameObject>)
 	{
 		_geometry->TickObject(deltatime);
+		_geometry->RenderBox->TickVertexGeometry(deltatime);
+		_geometry->Hitbox->TickVertexGeometry(deltatime);
+	}
+	else if constexpr (is_same_v<T, Character>)
+	{
+		_geometry->TickCharacter(deltatime);
+		_geometry->RenderBox->TickVertexGeometry(deltatime);
+		_geometry->Hitbox->TickVertexGeometry(deltatime);
 	}
 }
 
@@ -209,6 +254,13 @@ void LevelManager::DrawGeometry(T* _geometry)
 		_geometry->drawVertexGeometry();
 	}
 	else if constexpr (is_same_v<T, GameObject>)
+	{
+		_geometry->RenderBox->drawVertexGeometry();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		_geometry->Hitbox->drawVertexGeometry();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else if constexpr (is_same_v<T, Character>)
 	{
 		_geometry->RenderBox->drawVertexGeometry();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -265,6 +317,20 @@ void LevelManager::DeleteObject(T* _geometry)
 		_geometry->Hitbox->~DefaultCube();
 
 		_geometry->~GameObject();
+		delete _geometry;
+	}
+
+	else if constexpr (is_same_v<T, Character>)
+	{
+		// Remove object fromm level object vector
+		auto _ElementToRemove = std::find(CharactersInLevel.begin(), CharactersInLevel.end(), _geometry);
+		if (_ElementToRemove != CharactersInLevel.end())
+			CharactersInLevel.erase(_ElementToRemove);
+
+		_geometry->RenderBox->~DefaultCube();
+		_geometry->Hitbox->~DefaultCube();
+
+		_geometry->~Character();
 		delete _geometry;
 	}
 }

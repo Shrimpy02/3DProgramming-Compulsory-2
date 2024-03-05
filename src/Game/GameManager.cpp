@@ -25,14 +25,14 @@ GameManager::~GameManager()
 
 void GameManager::BeginPlay()
 {
-	Player->BeginPlay();
+	Player->BeginPlayCharacter();
 	LevelManagerObject->BeginPlay();
 
 }
 
 void GameManager::Tick(float deltatime)
 {
-	Player->Tick(deltatime);
+	Player->TickCharacter(deltatime);
 	LevelManagerObject->Tick(deltatime);
 	LevelManagerObject->TickDraw();
 	LevelManagerObject->CheckCollision();

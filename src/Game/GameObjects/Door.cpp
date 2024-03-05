@@ -22,7 +22,6 @@ Door::~Door()
 
 void Door::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _hitBoxReference)
 {
-
 	GameObject::AttachGeometry(_renderBoxReference, _hitBoxReference);
 }
 

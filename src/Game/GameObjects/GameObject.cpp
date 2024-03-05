@@ -22,14 +22,13 @@ void GameObject::AttachGeometry(DefaultCube* _renderBoxReference, DefaultCube* _
 {
 	RenderBox = _renderBoxReference;
 	Hitbox = _hitBoxReference;
-	//Hitbox->SetShouldDraw(false);
 }
 
 void GameObject::BeginPlayObject()
 {
 	if (!Hitbox) return;
 	Hitbox->WorldPosition = WorldPosition;
-	Hitbox->WorldScale = WorldScale * vec3(1.5, 1.5, 1.5);
+	Hitbox->WorldScale = WorldScale * vec3(1.5, 1.5, 2);
 	Hitbox->WorldRotationInDegrees = WorldRotationInDegrees;
 	Hitbox->WorldRotationAxis = WorldRotationAxis;
 }
