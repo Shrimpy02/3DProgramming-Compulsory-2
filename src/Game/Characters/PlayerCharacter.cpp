@@ -46,8 +46,13 @@ void PlayerCharacter::BeginPlayCharacter()
 void PlayerCharacter::TickCharacter(float deltatime)
 {
 	deltaTime = deltatime;
-	WorldPosition = PlayerCamera->Position;
-	WorldRotationInDegrees = -PlayerCamera->Yaw;
+	if(ControllsCamera)
+	{
+		PlayerCamera->Position = WorldPosition;
+		WorldRotationInDegrees = -PlayerCamera->Yaw;
+	}
+
+	velocity = MovementSpeed * deltaTime;
 
 	Character::TickCharacter(deltatime);
 }
@@ -61,24 +66,49 @@ void PlayerCharacter::ProcessInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 
-	// Camera Movement
-		PlayerCamera->SetMovementMode(WALKING);
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(FORWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(BACKWARD, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(LEFT, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(RIGHT, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(UP, (float)deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-		PlayerCamera->ProcessKeyboard(DOWN, (float)deltaTime);
+	float OringalY = WorldPosition.y;
 
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		IsInteracting = true;
+
+	PlayerCamera->SetMovementMode(WALKING);
+	if(ControllsCamera)
+	{
+		// Camera Movement
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			WorldPosition += PlayerCamera->Front * velocity;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			WorldPosition -= PlayerCamera->Front * velocity;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			WorldPosition -= PlayerCamera->Right * velocity;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			WorldPosition += PlayerCamera->Right * velocity;
+	}
 	else
+	{
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+			WorldPosition += vec3(0, 0, -1) * velocity;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+			WorldPosition -= vec3(0, 0, -1) * velocity;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+			WorldPosition -= vec3(1, 0, 0) * velocity;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+			WorldPosition += vec3(1, 0, 0) * velocity;
+	}
+
+		
+
+		WorldPosition.y = OringalY;
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && CanInteract)
+	{
+		CanInteract = false;
+		IsInteracting = true;
+	}
+	else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE)
+	{
+		CanInteract = true;
+		IsInteracting = false;
+	}
+	else 
 		IsInteracting = false;
 
 	if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && CanChangePath)
@@ -86,7 +116,7 @@ void PlayerCharacter::ProcessInput(GLFWwindow* window)
 		CanChangePath = false;
 		NPCReference->ChangePath();
 	}
-	if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
+	else if(glfwGetKey(window, GLFW_KEY_TAB) == GLFW_RELEASE)
 	{
 		CanChangePath = true;
 	}

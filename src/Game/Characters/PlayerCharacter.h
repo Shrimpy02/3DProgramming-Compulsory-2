@@ -1,17 +1,19 @@
-
 #pragma once
 
 #include "Character.h"
 #include "glm/glm.hpp"
 
 using namespace glm;
-
 class PlayerCharacter : public Character
 {
 public:
 	// ---------- Global Constants --------------
 
-	float MovementSpeed = 1.f;
+	bool ControllsCamera = true;
+
+	float velocity;
+
+	float MovementSpeed = 2.f;
 
 private:
 	// ---------- Local Constants --------------
@@ -22,6 +24,8 @@ private:
 	bool IsInteracting = false;
 
 	bool CanChangePath = true;
+
+	bool CanInteract = true;
 
 	class NPC* NPCReference;
 

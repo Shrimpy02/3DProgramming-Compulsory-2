@@ -14,6 +14,10 @@ class LevelManager
 public:
 	// ---------- Global Constants --------------
 
+	bool dirtyToggle = true;
+
+
+
 private:
 	// ---------- Local Constants --------------
 	

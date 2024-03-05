@@ -63,8 +63,12 @@ void LevelManager::BeginPlay()
 	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(2, 0.5, -4), vec3(3, 2, 0.5)));
 	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-3.7, 0.5, -6.1), vec3(5, 2, 0.5),90,vec3(0,1,0)));
 	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(3.7, 0.5, -6.1), vec3(5, 2, 0.5), 90, vec3(0, 1, 0)));
+	StaticGeometryInLevel.push_back(new DefaultCube(DefaultShader, vec3(-0, 0.5, -8.5), vec3(7, 2, 0.5)));
 	// Ceiling
 	StaticGeometryInLevel.push_back(new DefaultPyramid(DefaultShader, vec3(0, 2.5, -6.1), vec3(8.2, 2, 6)));
+	// Furniture
+	StaticGeometryInLevel.push_back(new DefaultPyramid(DefaultShader, vec3(-0, 0, -7), vec3(0.5, 0.7, 0.5)));
+	StaticGeometryInLevel.push_back(new DefaultSphere(DefaultShader, 3,vec3(-0, 0.8, -7), vec3(0.3, 0.3, 0.3)));
 
 	// Construct and add game objects to level
 	// Trophies
@@ -180,6 +184,14 @@ void LevelManager::CheckCollision()
 			DoCollision(_GameObject);
 		}
 	}
+	for (auto* _Geometry : StaticGeometryInLevel)
+	{
+		if (_Geometry->CheckCollision(Player->Hitbox))
+		{
+			// and player press button?
+			DoCollision(Player);
+		}
+	}
 
 }
 
@@ -287,8 +299,26 @@ void LevelManager::DoCollision(T* _geometry)
 			if(Player->GetIsInteracting())
 			{
 				door->ToggleDoor();
+				if(dirtyToggle)
+				{
+					Player->ControllsCamera = false;
+					Player->RenderBox->SetShouldDraw(true);
+					Player->GetCamera()->Position = vec3(-3.4, 1, -4.4);
+					dirtyToggle = false;
+				}
+				else
+				{
+					Player->ControllsCamera = true;
+					Player->RenderBox->SetShouldDraw(false);
+					//Player->GetCamera()->Position = vec3(-3.4, 1, -4.4);
+					dirtyToggle = true;
+				}
 			}
 		}
+	}
+	if constexpr (is_same_v<T, PlayerCharacter>)
+	{
+		cout << "Player ovelapp with geometry";
 	}
 }
 

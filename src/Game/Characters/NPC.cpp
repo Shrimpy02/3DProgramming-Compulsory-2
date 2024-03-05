@@ -53,11 +53,15 @@ void NPC::ChangePath()
 {
 
 	if (CurrentPathType == Aproximate)
+	{
+		CurrentPathType = Interpolated;
 		Path = ReadInterpolatedPath("InterpolatedPath.txt");
-	
+	}
 	else
+	{
+		CurrentPathType = Aproximate;
 		Path = ReadAproximatePath("AproximatePath.txt");
-
+	}
 }
 
 std::vector<vec3> NPC::ReadAproximatePath(const char* _filePath)
@@ -133,6 +137,7 @@ std::vector<vec3> NPC::ReadAproximatePath(const char* _filePath)
 	{
 		MovementVector = WorldPosition - temp[0];
 		GoalPoint = temp[0];
+		PathIt = 0;
 	}
 
 	return temp;
@@ -210,6 +215,7 @@ std::vector<vec3> NPC::ReadInterpolatedPath(const char* _filePath)
 	{
 		MovementVector = WorldPosition - temp[0];
 		GoalPoint = temp[0];
+		PathIt = 0;
 	}
 
 	return temp;
@@ -244,7 +250,7 @@ bool NPC::MoveToPoint(float deltatime)
 	float distance = glm::distance(WorldPosition, GoalPoint);
 
 	// Assuming you want to check if the distance is less than or equal to some threshold (epsilon)
-	float limit = 0.01f; // Adjust the epsilon value based on your requirements
+	float limit = 0.1f; // Adjust the epsilon value based on your requirements
 
 	if (distance <= limit)
 	{
