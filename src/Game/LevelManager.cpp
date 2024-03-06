@@ -188,8 +188,35 @@ void LevelManager::CheckCollision()
 	{
 		if (_Geometry->CheckCollision(Player->Hitbox))
 		{
-			// and player press button?
-			DoCollision(Player);
+			//vec3 halfPlayerSize = { Player->WorldScale.x / 2.0f, Player->WorldScale.y / 2.0f, Player->WorldScale.z / 2.0f };
+			//vec3 halfCollidingObjectSize = { _Geometry->WorldScale.x / 2.0f, _Geometry->WorldScale.y / 2.0f, _Geometry->WorldScale.z / 2.0f };
+
+			//// Calculate the distances between the centers of the player and the colliding object
+			//float deltaX = Player->WorldPosition.x - _Geometry->WorldPosition.x;
+			//float deltaY = Player->WorldPosition.y - _Geometry->WorldPosition.y;
+			//float deltaZ = Player->WorldPosition.z - _Geometry->WorldPosition.z;
+
+			//// Calculate the minimum distances required for collision
+			//float minDistanceX = halfPlayerSize.x + halfCollidingObjectSize.x;
+			//float minDistanceY = halfPlayerSize.y + halfCollidingObjectSize.y;
+			//float minDistanceZ = halfPlayerSize.z + halfCollidingObjectSize.z;
+
+			//// Check for collision in each direction
+			//if (std::abs(deltaX) < minDistanceX) {
+			//	// Collision in the x-axis
+			//	Player->WorldPosition.x -= Player->MovementDirection.x;
+			//}
+
+			//if (std::abs(deltaY) < minDistanceY) {
+			//	// Collision in the y-axis
+			//	Player->WorldPosition.y -= Player->MovementDirection.y;
+			//}
+
+			//if (std::abs(deltaZ) < minDistanceZ) {
+			//	// Collision in the z-axis
+			//	Player->WorldPosition.z -= Player->MovementDirection.z;
+			//}
+
 		}
 	}
 
@@ -268,6 +295,7 @@ void LevelManager::DrawGeometry(T* _geometry)
 	else if constexpr (is_same_v<T, GameObject>)
 	{
 		_geometry->RenderBox->drawVertexGeometry();
+		_geometry->Hitbox->SetShouldDraw(false);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		_geometry->Hitbox->drawVertexGeometry();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -275,6 +303,7 @@ void LevelManager::DrawGeometry(T* _geometry)
 	else if constexpr (is_same_v<T, Character>)
 	{
 		_geometry->RenderBox->drawVertexGeometry();
+		_geometry->Hitbox->SetShouldDraw(false);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		_geometry->Hitbox->drawVertexGeometry();
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -318,7 +347,7 @@ void LevelManager::DoCollision(T* _geometry)
 	}
 	if constexpr (is_same_v<T, PlayerCharacter>)
 	{
-		cout << "Player ovelapp with geometry";
+		Player->CanMoveZ = false;
 	}
 }
 

@@ -15,6 +15,12 @@ public:
 
 	float MovementSpeed = 2.f;
 
+	bool CanMoveX = true;
+
+	bool CanMoveZ = true;
+
+	vec3 MovementDirection;
+
 private:
 	// ---------- Local Constants --------------
 	float deltaTime;

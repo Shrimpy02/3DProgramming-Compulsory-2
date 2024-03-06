@@ -54,6 +54,11 @@ void PlayerCharacter::TickCharacter(float deltatime)
 
 	velocity = MovementSpeed * deltaTime;
 
+	MovementDirection = PlayerCamera->Front * velocity;
+
+	CanMoveZ = true;
+	CanMoveX = true;
+
 	Character::TickCharacter(deltatime);
 }
 
@@ -68,29 +73,31 @@ void PlayerCharacter::ProcessInput(GLFWwindow* window)
 
 	float OringalY = WorldPosition.y;
 
+	
+
 
 	PlayerCamera->SetMovementMode(WALKING);
 	if(ControllsCamera)
 	{
 		// Camera Movement
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			WorldPosition += PlayerCamera->Front * velocity;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			WorldPosition -= PlayerCamera->Front * velocity;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && CanMoveZ)
+			WorldPosition += MovementDirection;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && CanMoveZ)
+			WorldPosition -= MovementDirection;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && CanMoveX)
 			WorldPosition -= PlayerCamera->Right * velocity;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && CanMoveX)
 			WorldPosition += PlayerCamera->Right * velocity;
 	}
 	else
 	{
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && CanMoveZ)
 			WorldPosition += vec3(0, 0, -1) * velocity;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && CanMoveZ)
 			WorldPosition -= vec3(0, 0, -1) * velocity;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS && CanMoveX)
 			WorldPosition -= vec3(1, 0, 0) * velocity;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && CanMoveX)
 			WorldPosition += vec3(1, 0, 0) * velocity;
 	}
 
